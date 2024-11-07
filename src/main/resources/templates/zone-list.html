@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fa" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>فهرست نواحی</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="header">
+    <h1>فهرست نواحی</h1>
+    <a href="/page/areas/get-all-areas" class="button">برگشت به مناطق</a>
+</div>
+<div class="container">
+
+    <table>
+        <thead>
+        <tr>
+            <th>نام ناحیه</th>
+            <th>کد ناحیه</th>
+            <th>کد منطقه</th>
+            <th>عملیات</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="zone : ${zones}">
+            <td th:text="${zone.name}"></td>
+            <td th:text="${zone.code}"></td>
+            <td th:text="${zone.areaCode}"></td>
+            <td>
+                <!-- Edit and Delete buttons for zones -->
+                <a th:href="@{/page/zones/edit-zone(zoneId=${zone.id})}" class="button edit-button">ویرایش</a>
+                <a th:href="@{/page/zones/delete(zoneId=${zone.id})}" class="button delete-button" style="background-color: red;">حذف</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

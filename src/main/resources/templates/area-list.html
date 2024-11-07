@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fa" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>فهرست مناطق</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="header">
+    <h1>فهرست مناطق</h1>
+    <a href="/page/areas/create-area" class="button">اضافه کردن منطقه</a>
+</div>
+<div class="container">
+
+    <!-- Message container for success/error messages -->
+    <div id="message" th:if="${message != null}" th:classappend="${success ? 'success' : 'error'} alert">
+        <span th:text="${message}"></span>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>نام</th>
+            <th>کد</th>
+            <th>عملیات</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="area : ${areas}">
+            <td th:text="${area.name}"></td>
+            <td th:text="${area.code}"></td>
+            <td>
+                <a th:href="@{/page/areas/edit-area(code=${area.code})}" class="button edit-button">ویرایش</a>
+
+                <!-- Delete button with confirmation dialog -->
+                <a href="#"
+                   class="button delete-button"
+                   th:attr="data-code=${area.code}"
+                   style="background-color: red; color: white;"
+                   onclick="confirmDelete(event, this)">حذف</a>
+
+                <!-- Find Zones button (Orange) -->
+                <a th:href="@{/page/areas/find-zones(areaCode=${area.code})}" class="button find-zones-button"
+                   style="background-color: orange;">فهرست نواحی</a>
+
+                <!-- Add Zone button (Green) -->
+                <a th:href="@{/page/zones/create-zone(areaCode=${area.code})}" class="button add-zone-button" style="background-color: green; color: white;">افزودن ناحیه</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- JavaScript for Delete Confirmation -->
+<script>
+    function confirmDelete(event, element) {
+        event.preventDefault(); // Prevent default link behavior
+
+        // Retrieve the area code from the data-code attribute
+        const code = element.getAttribute('data-code');
+
+        if (confirm("آیا مطمئن هستید که میخواهید این منطقه را حذف کنید؟")) {
+            $.ajax({
+                type: 'DELETE',
+                url: '/areas/delete?code=' + code, // Append code as a query parameter
+                success: function(response) {
+                    alert(response); // Show success message
+                    location.reload(); // Reload page to reflect changes
+                },
+                error: function(xhr) {
+                    alert("خطا در حذف منطقه!"); // Show error message
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

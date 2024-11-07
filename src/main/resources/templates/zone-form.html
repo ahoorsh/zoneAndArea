@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fa" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>افزودن ناحیه</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="header">
+    <h1>افزودن ناحیه</h1>
+    <a href="/page/zones/get-all-zones" class="link">برگشت به فهرست نواحی</a>
+</div>
+<div class="zone-form-container">
+    <form id="createZoneForm" th:action="@{/zones/create}" th:object="${zoneDto}" method="post">
+        <div>
+            <label for="name">نام:</label>
+            <input type="text" id="name" th:field="*{name}" required />
+        </div>
+        <div>
+            <label for="code">کد:</label>
+            <input type="text" id="code" th:field="*{code}" required />
+        </div>
+        <input type="hidden" th:field="*{areaCode}" th:value="${areaCode}" />
+
+        <button type="submit">افزودن ناحیه</button>
+    </form>
+    <div id="responseMessage"></div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#createZoneForm').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    name: $('#name').val(),
+                    code: $('#code').val(),
+                    areaCode: $('input[name="areaCode"]').val()
+                }),
+                success: function(response) {
+                    $('#responseMessage').html('<div class="alert success">ناحیه با موفقیت ایجاد شد!</div>');
+                    setTimeout(function() {
+                        window.location.href = '/page/zones/get-all-zones';
+                    }, 2000); // Redirect after 2 seconds
+                },
+                error: function(xhr) {
+                    $('#responseMessage').html('<div class="alert error">خطا در ایجاد ناحیه!</div>');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
